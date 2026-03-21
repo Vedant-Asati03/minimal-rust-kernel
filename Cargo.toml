@@ -6,7 +6,12 @@ edition = "2024"
 [dependencies]
 
 [profile.dev]
-panic = "abort"
+panic = "abort" # disable stack unwinding on panic
 
 [profile.release]
-panic = "abort"
+panic = "abort" # disable stack unwinding on panic
+
+[[bin]]
+name = "minimal-rust-kernel"
+test = false
+bench = false
