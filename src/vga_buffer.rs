@@ -1,13 +1,13 @@
-use core::fmt;
-use core::clone::Clone;
-use core::cmp::Eq;
-use core::cmp::PartialEq;
-use core::fmt::Debug;
-use core::marker::Copy;
-use core::prelude::rust_2024::derive;
-use volatile::Volatile;
+use core::{
+    clone::Clone,
+    cmp::{Eq, PartialEq},
+    fmt::{Arguments, Debug, Result, Write},
+    marker::Copy,
+    prelude::rust_2024::derive,
+};
 use lazy_static::lazy_static;
 use spin::Mutex;
+use volatile::Volatile;
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -88,7 +88,7 @@ impl Writer {
         for row in 1..BUFFER_HEIGHT {
             for col in 0..BUFFER_WIDTH {
                 let character = self.buffer.chars[row][col].read();
-                self.buffer.chars[row-1][col].write(character);
+                self.buffer.chars[row - 1][col].write(character);
             }
         }
         self.clear_row(BUFFER_HEIGHT - 1);
@@ -119,8 +119,8 @@ impl Writer {
     }
 }
 
-impl fmt::Write for Writer {
-    fn write_str(&mut self, s: &str) -> fmt::Result {
+impl Write for Writer {
+    fn write_str(&mut self, s: &str) -> Result {
         self.write_string(s);
         Ok(())
     }
@@ -146,8 +146,6 @@ macro_rules! println {
 }
 
 #[doc(hidden)]
-pub fn _print(args: fmt::Arguments) {
-    use core::fmt::Write;
+pub fn _print(args: Arguments) {
     WRITER.lock().write_fmt(args).unwrap();
 }
-
